@@ -3,13 +3,13 @@
 #pragma once
 
 #include "GameFramework/GameMode.h"
-#include "TanksGameMode.generated.h"
+#include "MyTank_GameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TANKS_API ATanksGameMode : public AGameMode
+class TANKS_API AMyTank_GameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
