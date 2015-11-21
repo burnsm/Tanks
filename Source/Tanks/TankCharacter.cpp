@@ -2,6 +2,7 @@
 
 #include "Tanks.h"
 #include "TankCharacter.h"
+#import "Projectile.h"
 
 
 // Sets default values
@@ -35,6 +36,7 @@ void ATankCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
     InputComponent->BindAxis("Strafe", this, &ATankCharacter::MoveRight);
     InputComponent->BindAxis("Yaw", this, &ATankCharacter::Yaw);
     InputComponent->BindAxis("Pitch", this, &ATankCharacter::Pitch);
+    InputComponent->BindAction("Fire", IE_Pressed, this, &ATankCharacter::fire);
 }
 
 void ATankCharacter::MoveForward(float amount)
@@ -69,5 +71,14 @@ void ATankCharacter::Pitch(float amount)
 }
 
 
-
-
+/**
+ Function triggered when the space bar is pressed to fire a projectile
+ 
+ - parameter void:
+ - returns: void
+*/
+void ATankCharacter::fire(){
+    
+    AProjectile *bullet = GetWorld()->SpawnActor<AProjectile>(this->GetActorLocation(), FRotator(0,0,0));
+    bullet->setVelocity(GetActorForwardVector());
+}
