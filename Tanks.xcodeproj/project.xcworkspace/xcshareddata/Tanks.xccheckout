@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>5E885B6B-D984-4216-A0A9-C12D675CAA31</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Tanks</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>965316C74AAC7678C4B7151BCE85D2DFB202E5CB</key>
+		<string>https://github.com/burnsm/Tanks.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Tanks.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>965316C74AAC7678C4B7151BCE85D2DFB202E5CB</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/burnsm/Tanks.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>965316C74AAC7678C4B7151BCE85D2DFB202E5CB</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>965316C74AAC7678C4B7151BCE85D2DFB202E5CB</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Tanks</string>
+		</dict>
+	</array>
+</dict>
+</plist>
