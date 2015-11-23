@@ -93,9 +93,18 @@ FVector AProjectile::getVelocity(){
  - returns: void
  */
 void AProjectile::onHit(AActor *SelfActor, AActor *otherActor, FVector NormalImpulse, const FHitResult &hit){
-    if (GEngine) {
-        GEngine->AddOnScreenDebugMessage(0, 1.0f, FColor::Blue, "Hit");
+    
+    if(otherActor){
+        if (GEngine) {
+            GEngine->AddOnScreenDebugMessage(0, 1.0f, FColor::Blue, otherActor->GetName());
+            
+            //TODO:What do we do when we hit an AI?
+            if(otherActor->GetName().Contains(TEXT("AI_Character"))){
+                otherActor->SetActorLocation(otherActor->GetActorLocation() - FVector(0, 50, 0));
+            }
+        }
     }
+    
 }
 
 
