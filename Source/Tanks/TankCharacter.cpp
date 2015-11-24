@@ -79,6 +79,7 @@ void ATankCharacter::Pitch(float amount)
  */
 void ATankCharacter::fire(){
     
+    FVector start = GetActorLocation();
     FVector vel = GetActorForwardVector();
     
     TArray<UActorComponent*> me = GetComponents();
@@ -90,6 +91,7 @@ void ATankCharacter::fire(){
             
             if(thisComp->GetName() == "barrel"){
                 vel = thisComp->GetRightVector();
+                start = thisComp->GetComponentLocation();
             }
         }else{
             GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, TEXT("No name"));
@@ -97,7 +99,7 @@ void ATankCharacter::fire(){
     }
     
     //TODO: edit starting position of bullet and initial velocity and physics and stuff
-    AProjectile *bullet = GetWorld()->SpawnActor<AProjectile>(this->GetActorLocation(), FRotator(0,0,0));
+    AProjectile *bullet = GetWorld()->SpawnActor<AProjectile>(start, FRotator(0,0,0));
     vel = vel*100;
     bullet->setVelocity(vel);
 }
