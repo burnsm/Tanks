@@ -44,6 +44,19 @@ void ATankCharacter::MoveForward(float amount)
     if(Controller && amount)
     {
         FVector fwd = GetActorForwardVector();
+        
+        TArray<UActorComponent*> me = GetComponents();
+        
+        for(int i = 0; i < me.Num(); i++){
+            UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
+            if (thisComp) {
+                if(thisComp->GetName() == "turret"){
+                    fwd = thisComp->GetRightVector();
+                }
+
+            }
+        }
+        
         AddMovementInput (fwd, amount);
     }
 }
@@ -54,6 +67,20 @@ void ATankCharacter::MoveRight(float amount)
     if(Controller && amount)
     {
         FVector fwd = GetActorRightVector();
+        
+        TArray<UActorComponent*> me = GetComponents();
+        
+        for(int i = 0; i < me.Num(); i++){
+            UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
+            if (thisComp) {
+                if(thisComp->GetName() == "turret"){
+                    fwd = thisComp->GetForwardVector();
+                    fwd = fwd * (-1);
+                }
+                
+            }
+        }
+        
         AddMovementInput (fwd, amount);
     }
 }
