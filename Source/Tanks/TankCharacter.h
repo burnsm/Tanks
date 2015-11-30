@@ -28,7 +28,5 @@ public:
     void MoveRight(float amount);
     void Yaw(float amount);
     void Pitch(float amount);
-
-	
-	
+    void fire();
 };
