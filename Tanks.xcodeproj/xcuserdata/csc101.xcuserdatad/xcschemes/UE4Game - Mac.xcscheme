@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F0F604080DA7621A6D933C9E"
+               BlueprintIdentifier = "BC2E49E2BEEF45A683AFFE79"
                BuildableName = "UE4Game - Mac"
                BlueprintName = "UE4Game - Mac"
                ReferencedContainer = "container:Tanks.xcodeproj">
@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "218920EFE04144E374789075"
+               BlueprintIdentifier = "08A643E93FEA45CE26754695"
                BuildableName = "UE4CmdLineRun.xctest"
                BlueprintName = "UE4CmdLineRun"
                ReferencedContainer = "container:Tanks.xcodeproj">
@@ -42,7 +42,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F0F604080DA7621A6D933C9E"
+            BlueprintIdentifier = "BC2E49E2BEEF45A683AFFE79"
             BuildableName = "UE4Game - Mac"
             BlueprintName = "UE4Game - Mac"
             ReferencedContainer = "container:Tanks.xcodeproj">
@@ -65,7 +65,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F0F604080DA7621A6D933C9E"
+            BlueprintIdentifier = "BC2E49E2BEEF45A683AFFE79"
             BuildableName = "UE4Game - Mac"
             BlueprintName = "UE4Game - Mac"
             ReferencedContainer = "container:Tanks.xcodeproj">
@@ -94,7 +94,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F0F604080DA7621A6D933C9E"
+            BlueprintIdentifier = "BC2E49E2BEEF45A683AFFE79"
             BuildableName = "UE4.app"
             BlueprintName = "UE4"
             ReferencedContainer = "container:UE4.xcodeproj">
