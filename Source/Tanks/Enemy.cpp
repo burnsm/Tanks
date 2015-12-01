@@ -37,31 +37,35 @@ void AEnemy::Tick( float DeltaTime )
  - parameter void:
  - returns: void
  */
-void AEnemy::fire(){
+void AEnemy::fire(float angle){
     
     //TODO: Rotation of the barrel up and down
     
-    if (canFire) {
-        
-        FVector start = GetActorLocation();
-        FVector vel = GetActorForwardVector();
-        
-        TArray<UActorComponent*> me = GetComponents();
-        
-        for(int i = 0; i < me.Num(); i++){
-            UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
-            if (GEngine && thisComp) {
-                GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, thisComp->GetName());
-                
-                if(thisComp->GetName() == "barrel"){
-                    vel = thisComp->GetRightVector();
-                    start = thisComp->GetComponentLocation();
-                }
-            }else{
-                GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, TEXT("No name"));
+    FString TheFloatStr = FString::SanitizeFloat(angle);
+    GEngine->AddOnScreenDebugMessage(100, 1.0f, FColor::Red, TheFloatStr);
+    
+    
+    FVector start = GetActorLocation();
+    FVector vel = GetActorForwardVector();
+    
+    TArray<UActorComponent*> me = GetComponents();
+    
+    for(int i = 0; i < me.Num(); i++){
+        UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
+        if (GEngine && thisComp) {
+            GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, thisComp->GetName());
+            
+            if(thisComp->GetName() == "barrel"){
+                thisComp->AddLocalRotation(FRotator(0, 0, angle));
+                vel = thisComp->GetRightVector();
+                start = thisComp->GetComponentLocation();
             }
+        }else{
+            GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, TEXT("No name"));
         }
-        
+    }
+    
+    if (canFire) {
         //TODO: edit starting position of bullet and initial velocity and physics and stuff
         AProjectile *bullet = GetWorld()->SpawnActor<AProjectile>(start, FRotator(0,0,0));
         vel = vel*100;

@@ -24,7 +24,7 @@ public:
 	virtual void Tick( float DeltaSeconds ) override;
 
     UFUNCTION(BlueprintCallable, Category = "UserMade")
-    void fire();
+    void fire(float angle);
     
     FTimerHandle handleClock;
     void readyToFire();
