@@ -56,7 +56,7 @@ void AEnemy::fire(float angle){
             GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, thisComp->GetName());
             
             if(thisComp->GetName() == "barrel"){
-                thisComp->AddLocalRotation(FRotator(0, 0, angle));
+                thisComp->SetRelativeRotation(FRotator(0, 0, angle));
                 vel = thisComp->GetRightVector();
                 start = thisComp->GetComponentLocation();
             }
