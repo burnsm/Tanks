@@ -96,10 +96,10 @@ void AProjectile::onHit(AActor *SelfActor, AActor *otherActor, FVector NormalImp
     
     if(otherActor){
         if (GEngine) {
-            GEngine->AddOnScreenDebugMessage(0, 1.0f, FColor::Blue, otherActor->GetName());
+            GEngine->AddOnScreenDebugMessage(0, 1.0f, FColor::Green, otherActor->GetName());
             
             //TODO:What do we do when we hit an AI?
-            if(otherActor->GetName().Contains(TEXT("AI_Character"))){
+            if(otherActor->GetName().Contains(TEXT("BP_Enemy"))){
                 otherActor->SetActorLocation(otherActor->GetActorLocation() - FVector(0, 50, 0));
             }
         }
