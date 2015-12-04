@@ -35,7 +35,8 @@ void ATankCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
     InputComponent->BindAxis("Forward", this, &ATankCharacter::MoveForward);
     InputComponent->BindAxis("Strafe", this, &ATankCharacter::MoveRight);
     InputComponent->BindAxis("Yaw", this, &ATankCharacter::Yaw);
-    InputComponent->BindAxis("Pitch", this, &ATankCharacter::Pitch);
+    InputComponent->BindAxis("Pitch", this, &ATankCharacter::RaiseBarrel);
+    InputComponent->BindAxis("Raise", this, &ATankCharacter::Pitch);
     InputComponent->BindAction("Fire", IE_Pressed, this, &ATankCharacter::fire);
 }
 
@@ -95,6 +96,7 @@ void ATankCharacter::Yaw(float amount)
 void ATankCharacter::Pitch(float amount)
 {
     AddControllerPitchInput(-200.f * amount * GetWorld()->GetDeltaSeconds());
+    //RaiseBarrel(-200.f * amount * GetWorld()->GetDeltaSeconds());
 }
 
 
@@ -125,8 +127,38 @@ void ATankCharacter::fire(){
         }
     }
     
+    if(FireSound !=NULL)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+    }
+    
     //TODO: edit starting position of bullet and initial velocity and physics and stuff
     AProjectile *bullet = GetWorld()->SpawnActor<AProjectile>(start, FRotator(0,0,0));
     vel = vel*100;
     bullet->setVelocity(vel);
 }
+
+/**
+ TODO: Transform BluePrints to code
+ Raising and Lowering the  Barrel - to be connected with up/down arrow keys
+ parameter void:
+ returns: void
+*/
+void ATankCharacter::RaiseBarrel(float amount)
+{
+
+    //(AddControllerPitchInput(-200.f * amount * GetWorld()->GetDeltaSeconds())));
+    TArray<UActorComponent*> me = GetComponents();
+    
+    for(int i = 0; i < me.Num(); i++){
+        UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
+        if (GEngine && thisComp) {
+            if(thisComp->GetName() == "barrel"){
+                thisComp->AddLocalRotation(FRotator(0, 0, amount));
+                GEngine->AddOnScreenDebugMessage(40, 1.0f, FColor::Blue, TEXT("Pitch"));
+            }
+        }
+    }
+}
+
+

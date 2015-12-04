@@ -37,7 +37,7 @@ public:
     
     UFUNCTION()
     void onHit(AActor *SelfActor, AActor *otherActor, FVector NormalImpulse, const FHitResult &hit);
-    
+
     
 private:
     FVector velocity;
