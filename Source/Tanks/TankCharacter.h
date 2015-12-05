@@ -27,6 +27,10 @@ public:
     /** Sound to play each time we fire */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
     class USoundBase* FireSound;
+    
+    /** Projectile class to spawn */
+    UPROPERTY(EditDefaultsOnly, Category=Projectile)
+    TSubclassOf<class AProjectile> ProjectileClass;
   
     //float RotationRate=1.0 ;
     void MoveForward(float amount);

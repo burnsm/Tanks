@@ -3,6 +3,8 @@
 #include "Tanks.h"
 #include "TankCharacter.h"
 #include "Projectile.h"
+#include "Animation/AnimInstance.h"
+#include "GameFramework/InputSettings.h"
 
 
 // Sets default values
@@ -27,6 +29,7 @@ void ATankCharacter::Tick( float DeltaTime )
     
 }
 
+
 // Called to bind functionality to input
 void ATankCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
@@ -40,6 +43,13 @@ void ATankCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
     InputComponent->BindAction("Fire", IE_Pressed, this, &ATankCharacter::fire);
 }
 
+
+/**
+ Function triggered when W or S is pressed to move the character forward or backward
+ 
+ - parameter amount: the amount to move the tank
+ - returns: void
+ */
 void ATankCharacter::MoveForward(float amount)
 {
     if(Controller && amount)
@@ -48,9 +58,12 @@ void ATankCharacter::MoveForward(float amount)
         
         TArray<UActorComponent*> me = GetComponents();
         
+        //find the direction of the turrent to move the tank in
         for(int i = 0; i < me.Num(); i++){
             UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
             if (thisComp) {
+                
+                //if the turrent is found, get its direction to move the tank in that direction
                 if(thisComp->GetName() == "turret"){
                     fwd = thisComp->GetRightVector();
                 }
@@ -63,6 +76,12 @@ void ATankCharacter::MoveForward(float amount)
 }
 
 
+/**
+ Function triggered when A or D is pressed to move the character right or left
+ 
+ - parameter amount: the amount to move the tank
+ - returns: void
+ */
 void ATankCharacter::MoveRight(float amount)
 {
     if(Controller && amount)
@@ -71,9 +90,12 @@ void ATankCharacter::MoveRight(float amount)
         
         TArray<UActorComponent*> me = GetComponents();
         
+        //find the direction of the turrent to move the tank in
         for(int i = 0; i < me.Num(); i++){
             UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
             if (thisComp) {
+                
+                //if the turrent is found, get its direction to move the tank side to side from that direction
                 if(thisComp->GetName() == "turret"){
                     fwd = thisComp->GetForwardVector();
                     fwd = fwd * (-1);
@@ -87,16 +109,27 @@ void ATankCharacter::MoveRight(float amount)
 }
 
 
+/**
+ Function triggered when mouse is moved in the X direction
+ 
+ - parameter amount: the amount the mouse is moved
+ - returns: void
+ */
 void ATankCharacter::Yaw(float amount)
 {
     AddControllerYawInput(200.f * amount * GetWorld()->GetDeltaSeconds());
 }
 
 
+/**
+ Function triggered when mouse is moved in the Y direction
+ 
+ - parameter amount: the amount the mouse is moved
+ - returns: void
+ */
 void ATankCharacter::Pitch(float amount)
 {
     AddControllerPitchInput(-200.f * amount * GetWorld()->GetDeltaSeconds());
-    //RaiseBarrel(-200.f * amount * GetWorld()->GetDeltaSeconds());
 }
 
 
@@ -110,38 +143,55 @@ void ATankCharacter::fire(){
     
     FVector start = GetActorLocation();
     FVector vel = GetActorForwardVector();
+    FRotator rot = GetActorRotation();
     
     TArray<UActorComponent*> me = GetComponents();
     
+    //find the barrel to get the direction vector of the velocity of the bullet
     for(int i = 0; i < me.Num(); i++){
         UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
         if (GEngine && thisComp) {
             GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, thisComp->GetName());
             
+            //if the barrel is found, set starting position and velocity
             if(thisComp->GetName() == "barrel"){
                 vel = thisComp->GetRightVector();
                 start = thisComp->GetComponentLocation();
+                rot = thisComp->GetComponentRotation();
             }
         }else{
             GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, TEXT("No name"));
         }
     }
     
+    //play the fire sound
     if(FireSound !=NULL)
     {
-        UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+        //UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
     }
     
-    //TODO: edit starting position of bullet and initial velocity and physics and stuff
-    AProjectile *bullet = GetWorld()->SpawnActor<AProjectile>(start, FRotator(0,0,0));
-    vel = vel*100;
-    bullet->setVelocity(vel);
+    // try and fire a projectile
+    if (ProjectileClass != NULL)
+    {
+        
+        //convert velocity to a rotator
+        const FRotator SpawnRotation = vel.Rotation();
+        
+        UWorld* const World = GetWorld();
+        if (World != NULL)
+        {
+            // spawn the projectile at the muzzle
+            World->SpawnActor<AProjectile>(ProjectileClass, start, SpawnRotation);
+        }
+    }
 }
+
 
 /**
  TODO: Transform BluePrints to code
  Raising and Lowering the  Barrel - to be connected with up/down arrow keys
- parameter void:
+ 
+ parameter amount: the amount to raise or lower the barrel
  returns: void
 */
 void ATankCharacter::RaiseBarrel(float amount)
@@ -150,9 +200,12 @@ void ATankCharacter::RaiseBarrel(float amount)
     //(AddControllerPitchInput(-200.f * amount * GetWorld()->GetDeltaSeconds())));
     TArray<UActorComponent*> me = GetComponents();
     
+    //find the barrel component
     for(int i = 0; i < me.Num(); i++){
         UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
         if (GEngine && thisComp) {
+            
+            //if the barrel is found, add the rotation to it
             if(thisComp->GetName() == "barrel"){
                 thisComp->AddLocalRotation(FRotator(0, 0, amount));
                 GEngine->AddOnScreenDebugMessage(40, 1.0f, FColor::Blue, TEXT("Pitch"));

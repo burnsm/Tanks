@@ -34,7 +34,7 @@ void AEnemy::Tick( float DeltaTime )
 /**
  Function triggered when the space bar is pressed to fire a projectile
  
- - parameter void:
+ - parameter angle: the angle of the barrel to fire the bullet in
  - returns: void
  */
 void AEnemy::fire(float angle){
@@ -50,11 +50,13 @@ void AEnemy::fire(float angle){
     
     TArray<UActorComponent*> me = GetComponents();
     
+    //search for the barrel to set the bullets velocity direction and start point
     for(int i = 0; i < me.Num(); i++){
         UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
         if (GEngine && thisComp) {
             GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, thisComp->GetName());
             
+            //if the barrel is found, give the bullet the position and direction vector of the barrel
             if(thisComp->GetName() == "barrel"){
                 thisComp->SetRelativeRotation(FRotator(0, 0, angle));
                 vel = thisComp->GetRightVector();
@@ -65,11 +67,23 @@ void AEnemy::fire(float angle){
         }
     }
     
+    //only allow the computer to fire once per second
     if (canFire) {
-        //TODO: edit starting position of bullet and initial velocity and physics and stuff
-        AProjectile *bullet = GetWorld()->SpawnActor<AProjectile>(start, FRotator(0,0,0));
-        vel = vel*100;
-        bullet->setVelocity(vel);
+        
+        // try and fire a projectile
+        if (ProjectileClass != NULL)
+        {
+            
+            //convert velocity to a rotator
+            const FRotator SpawnRotation = vel.Rotation();
+            
+            UWorld* const World = GetWorld();
+            if (World != NULL)
+            {
+                // spawn the projectile at the muzzle
+                World->SpawnActor<AProjectile>(ProjectileClass, start, SpawnRotation);
+            }
+        }
         
         GetWorld()->GetTimerManager().SetTimer(handleClock, this, &AEnemy::readyToFire, 1.0f, true);
         canFire = false;
