@@ -2,13 +2,14 @@
 
 #include "Tanks.h"
 #include "Projectile.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 
 // Sets default values
 AProjectile::AProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	/*PrimaryActorTick.bCanEverTick = true;
 
     // Structure to hold one-time initialization
     struct FConstructorStatics
@@ -40,7 +41,28 @@ AProjectile::AProjectile()
     ProjectileMaterial = ConstructorStatics.ProjectileMaterial.Get();
     
     //adds onHit to detect hits
-    this->OnActorHit.AddDynamic(this, &AProjectile::onHit);
+    //this->OnActorHit.AddDynamic(this, &AProjectile::onHit);*/
+    
+    // Use a sphere as a simple collision representation
+    CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
+    CollisionComp->InitSphereRadius(5.0f);
+    CollisionComp->BodyInstance.SetCollisionProfileName("Projectile");
+    CollisionComp->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);		// set up a notification for when this component hits something blocking
+    
+    // Players can't walk on it
+    CollisionComp->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
+    CollisionComp->CanCharacterStepUpOn = ECB_No;
+    
+    // Set as root component
+    RootComponent = CollisionComp;
+    
+    // Use a ProjectileMovementComponent to govern this projectile's movement
+    ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComp"));
+    ProjectileMovement->UpdatedComponent = CollisionComp;
+    ProjectileMovement->InitialSpeed = 3000.f;
+    ProjectileMovement->MaxSpeed = 3000.f;
+    ProjectileMovement->bRotationFollowsVelocity = true;
+    ProjectileMovement->bShouldBounce = true;
 }
 
 // Called when the game starts or when spawned
@@ -55,8 +77,8 @@ void AProjectile::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
     
-    FVector newLocation = GetActorLocation() + velocity;
-    SetActorLocation(newLocation);
+    //FVector newLocation = GetActorLocation() + velocity;
+    //SetActorLocation(newLocation);
 
 }
 
@@ -92,15 +114,15 @@ FVector AProjectile::getVelocity(){
  - parameter hit: the hit result
  - returns: void
  */
-void AProjectile::onHit(AActor *SelfActor, AActor *otherActor, FVector NormalImpulse, const FHitResult &hit){
+void AProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit){
     
-    if(otherActor){
+    if(OtherActor){
         if (GEngine) {
-            GEngine->AddOnScreenDebugMessage(0, 1.0f, FColor::Green, otherActor->GetName());
+            GEngine->AddOnScreenDebugMessage(0, 1.0f, FColor::Green, OtherActor->GetName());
             
             //TODO:What do we do when we hit an AI?
-            if(otherActor->GetName().Contains(TEXT("BP_Enemy"))){
-                otherActor->SetActorLocation(otherActor->GetActorLocation() - FVector(0, 50, 0));
+            if(OtherActor->GetName().Contains(TEXT("BP_Enemy"))){
+                OtherActor->SetActorLocation(OtherActor->GetActorLocation() - FVector(0, 50, 0));
             }
         }
     }
