@@ -26,6 +26,10 @@ public:
     UFUNCTION(BlueprintCallable, Category = "UserMade")
     void fire(float angle);
     
+    /** Projectile class to spawn */
+    UPROPERTY(EditDefaultsOnly, Category=Projectile)
+    TSubclassOf<class AProjectile> ProjectileClass;
+    
     FTimerHandle handleClock;
     void readyToFire();
     bool canFire = true;
