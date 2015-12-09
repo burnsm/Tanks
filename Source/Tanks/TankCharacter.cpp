@@ -60,20 +60,15 @@ void ATankCharacter::RotateForward(float amount)
         
         TArray<UActorComponent*> me = GetComponents();
         
-        //find the direction of the turrent to move the tank in
+        //loop through all components of the tank
         for(int i = 0; i < me.Num(); i++){
             UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
             if (thisComp) {
                 
-                //if the turrent is found, get its direction to move the tank side to side from that direction
+                //if the turrent is found, set the direction the tank is facing to that direction
                 if(thisComp->GetName() == "turret"){
                     fwd = thisComp->GetForwardVector();
                     fwd = fwd * (-1);
-                    
-                    FString x = FString::SanitizeFloat(thisComp->GetComponentRotation().Vector().X);
-                    FString y = FString::SanitizeFloat(thisComp->GetComponentRotation().Vector().Y);
-                    FString z = FString::SanitizeFloat(thisComp->GetComponentRotation().Vector().Z);
-                    GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Red, TEXT("(" + x + ", " + y + ", " + z + ")"));
                     
                     if (amount < 0){
                         currentDirection = (thisComp->GetComponentRotation().Vector() * -1).Rotation();
@@ -81,23 +76,28 @@ void ATankCharacter::RotateForward(float amount)
                         currentDirection = thisComp->GetComponentRotation();
                     }
                     
+                    //if the rotation of the bottom is happening, rotate all of the pieces
                 }else if (thisComp->GetName() == "body" || thisComp->GetName() == "sideL" ||thisComp->GetName() == "sideR" ||thisComp->GetName() == "treadL" ||thisComp->GetName() == "treadR") {
                     
                     int direction;
                     FRotator newRot = thisComp->GetComponentRotation();
                     
-                    FString x = FString::SanitizeFloat(currentDirection.Yaw);
-                    FString y = FString::SanitizeFloat(newRot.Yaw);
-                    GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Red, TEXT("(" + x + ", " + y + ")"));
                     
-                    if (FMath::Abs(currentDirection.Yaw - newRot.Yaw + 360) < 360 - FMath::Abs(currentDirection.Yaw - newRot.Yaw + 360)){
+                    //find the direction of the shortest rotation to get the bottom facing the correct angle
+                    if ((currentDirection.Yaw - newRot.Yaw) > 0 && (currentDirection.Yaw - newRot.Yaw) < 360 - (currentDirection.Yaw - newRot.Yaw)){
+                        direction = 5;
+                    }else if ((currentDirection.Yaw - newRot.Yaw) > 0 && (currentDirection.Yaw - newRot.Yaw) > 360 - (currentDirection.Yaw - newRot.Yaw)) {
                         direction = -5;
-                    }else{
+                    }else if ((currentDirection.Yaw - newRot.Yaw) < 0 && FMath::Abs(currentDirection.Yaw - newRot.Yaw) < 360 - FMath::Abs(currentDirection.Yaw - newRot.Yaw)) {
+                        direction = -5;
+                    }else if ((currentDirection.Yaw - newRot.Yaw) < 0 && FMath::Abs(currentDirection.Yaw - newRot.Yaw) > 360 - FMath::Abs(currentDirection.Yaw - newRot.Yaw)) {
                         direction = 5;
                     }
                     
+                    
+                    //if the bottom of the tank is not already facing that direction, rotate it by the ABS(amount) in the calculated direction
                     if (!currentDirection.Equals(newRot, 5)){
-                        thisComp->AddLocalRotation(FRotator(0, amount*direction, 0));
+                        thisComp->AddLocalRotation(FRotator(0, FMath::Abs(amount)*direction, 0));
                     }
                 }
                 
@@ -121,20 +121,15 @@ void ATankCharacter::RotateRight(float amount)
         
         TArray<UActorComponent*> me = GetComponents();
         
-        //find the direction of the turrent to move the tank in
+        //loop through all components of the tank
         for(int i = 0; i < me.Num(); i++){
             UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
             if (thisComp) {
                 
-                //if the turrent is found, get its direction to move the tank side to side from that direction
+                //if the turrent is found, set the direction the tank is facing to that direction
                 if(thisComp->GetName() == "turret"){
                     fwd = thisComp->GetForwardVector();
                     fwd = fwd * (-1);
-                    
-                    FString x = FString::SanitizeFloat(thisComp->GetComponentRotation().Vector().X);
-                    FString y = FString::SanitizeFloat(thisComp->GetComponentRotation().Vector().Y);
-                    FString z = FString::SanitizeFloat(thisComp->GetComponentRotation().Vector().Z);
-                    GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Red, TEXT("(" + x + ", " + y + ", " + z + ")"));
                     
                     if (amount < 0){
                         currentDirection = (thisComp->GetComponentRotation().Vector() * -1).Rotation() + FRotator(0, 90, 0);
@@ -142,23 +137,28 @@ void ATankCharacter::RotateRight(float amount)
                         currentDirection = thisComp->GetComponentRotation() + FRotator(0, 90, 0);
                     }
                     
+                    //if the rotation of the bottom is happening, rotate all of the pieces
                 }else if (thisComp->GetName() == "body" || thisComp->GetName() == "sideL" ||thisComp->GetName() == "sideR" ||thisComp->GetName() == "treadL" ||thisComp->GetName() == "treadR") {
                     
                     int direction;
                     FRotator newRot = thisComp->GetComponentRotation();
                     
-                    if (FMath::Abs(currentDirection.Yaw - newRot.Yaw + 360) < 360 - FMath::Abs(currentDirection.Yaw - newRot.Yaw + 360)){
+                    
+                    //find the direction of the shortest rotation to get the bottom facing the correct angle
+                    if ((currentDirection.Yaw - newRot.Yaw) > 0 && (currentDirection.Yaw - newRot.Yaw) < 360 - (currentDirection.Yaw - newRot.Yaw)){
                         direction = 5;
-                    }else{
+                    }else if ((currentDirection.Yaw - newRot.Yaw) > 0 && (currentDirection.Yaw - newRot.Yaw) > 360 - (currentDirection.Yaw - newRot.Yaw)) {
                         direction = -5;
+                    }else if ((currentDirection.Yaw - newRot.Yaw) < 0 && FMath::Abs(currentDirection.Yaw - newRot.Yaw) < 360 - FMath::Abs(currentDirection.Yaw - newRot.Yaw)) {
+                        direction = -5;
+                    }else if ((currentDirection.Yaw - newRot.Yaw) < 0 && FMath::Abs(currentDirection.Yaw - newRot.Yaw) > 360 - FMath::Abs(currentDirection.Yaw - newRot.Yaw)) {
+                        direction = 5;
                     }
                     
-                    FString x = FString::SanitizeFloat(FMath::Abs(currentDirection.Yaw - newRot.Yaw + 360));
-                    FString y = FString::SanitizeFloat(360 - FMath::Abs(currentDirection.Yaw - newRot.Yaw + 360));
-                    GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Red, TEXT("(" + x + ", " + y + ")"));
                     
+                    //if the bottom of the tank is not already facing that direction, rotate it by the ABS(amount) in the calculated direction
                     if (!currentDirection.Equals(newRot, 5)){
-                        thisComp->AddLocalRotation(FRotator(0, amount*direction, 0));
+                        thisComp->AddLocalRotation(FRotator(0, FMath::Abs(amount)*direction, 0));
                     }
                 }
                 
@@ -270,10 +270,10 @@ void ATankCharacter::fire(){
  
  parameter amount: the amount to raise or lower the barrel
  returns: void
-*/
+ */
 void ATankCharacter::RaiseBarrel(float amount)
 {
-
+    
     //(AddControllerPitchInput(-200.f * amount * GetWorld()->GetDeltaSeconds())));
     TArray<UActorComponent*> me = GetComponents();
     
