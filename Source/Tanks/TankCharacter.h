@@ -33,10 +33,12 @@ public:
     TSubclassOf<class AProjectile> ProjectileClass;
   
     //float RotationRate=1.0 ;
-    void MoveForward(float amount);
-    void MoveRight(float amount);
+    void RotateForward(float amount);
+    void RotateRight(float amount);
     void Yaw(float amount);
-    void Pitch(float amount);
+    void MoveForward(float amount);
     void fire();
     void RaiseBarrel(float amount);
+    
+    FRotator currentDirection;
 };

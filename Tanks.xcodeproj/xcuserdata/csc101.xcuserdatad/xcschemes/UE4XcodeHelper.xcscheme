@@ -14,7 +14,7 @@
            buildForAnalyzing = "YES">
            <BuildableReference
               BuildableIdentifier = "primary"
-              BlueprintIdentifier = "71665C6627798BD8F3C6E09B"
+              BlueprintIdentifier = "218920EFE04144E374789075"
               BuildableName = "libUE4XcodeHelper.a"
               BlueprintName = "UE4XcodeHelper"
               ReferencedContainer = "container:Tanks.xcodeproj">
@@ -32,7 +32,7 @@
            skipped = "NO">
            <BuildableReference
               BuildableIdentifier = "primary"
-              BlueprintIdentifier = "08A643E93FEA45CE26754695"
+              BlueprintIdentifier = "46BC77453B920EF68BDB1B65"
               BuildableName = "UE4CmdLineRun.xctest"
               BlueprintName = "UE4CmdLineRun"
               ReferencedContainer = "container:Tanks.xcodeproj">
@@ -42,7 +42,7 @@
      <MacroExpansion>
         <BuildableReference
            BuildableIdentifier = "primary"
-           BlueprintIdentifier = "71665C6627798BD8F3C6E09B"
+           BlueprintIdentifier = "218920EFE04144E374789075"
            BuildableName = "libUE4XcodeHelper.a"
            BlueprintName = "UE4XcodeHelper"
            ReferencedContainer = "container:Tanks.xcodeproj">
@@ -76,7 +76,7 @@
      <BuildableProductRunnable>
          <BuildableReference
              BuildableIdentifier = "primary"
-	          BlueprintIdentifier = "71665C6627798BD8F3C6E09B"
+	          BlueprintIdentifier = "218920EFE04144E374789075"
              BuildableName = "UE4XcodeHelper"
              BlueprintName = "UE4XcodeHelper"
              ReferencedContainer = "container:UE4.xcodeproj">
