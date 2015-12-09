@@ -13,6 +13,8 @@ ATankCharacter::ATankCharacter()
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
     
+    currentDirection = FVector(0, -1, 0).Rotation();
+    
 }
 
 // Called when the game starts or when spawned
@@ -35,54 +37,22 @@ void ATankCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
 {
     //Super::SetupPlayerInputComponent(InputComponent);
     check(InputComponent);
-    InputComponent->BindAxis("Forward", this, &ATankCharacter::MoveForward);
-    InputComponent->BindAxis("Strafe", this, &ATankCharacter::MoveRight);
-    InputComponent->BindAxis("Yaw", this, &ATankCharacter::Yaw);
-    InputComponent->BindAxis("Pitch", this, &ATankCharacter::RaiseBarrel);
-    InputComponent->BindAxis("Raise", this, &ATankCharacter::Pitch);
+    InputComponent->BindAxis("RotateForward", this, &ATankCharacter::RotateForward);
+    InputComponent->BindAxis("RotateStrafe", this, &ATankCharacter::RotateRight);
+    //InputComponent->BindAxis("Yaw", this, &ATankCharacter::Yaw);
+    //InputComponent->BindAxis("Pitch", this, &ATankCharacter::RaiseBarrel);
+    InputComponent->BindAxis("MoveForward", this, &ATankCharacter::MoveForward);
     InputComponent->BindAction("Fire", IE_Pressed, this, &ATankCharacter::fire);
 }
 
 
 /**
- Function triggered when W or S is pressed to move the character forward or backward
+ Function triggered when W or S is pressed to rotate the character forward or backward
  
- - parameter amount: the amount to move the tank
+ - parameter amount: the amount to rotate the tank
  - returns: void
  */
-void ATankCharacter::MoveForward(float amount)
-{
-    if(Controller && amount)
-    {
-        FVector fwd = GetActorForwardVector();
-        
-        TArray<UActorComponent*> me = GetComponents();
-        
-        //find the direction of the turrent to move the tank in
-        for(int i = 0; i < me.Num(); i++){
-            UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
-            if (thisComp) {
-                
-                //if the turrent is found, get its direction to move the tank in that direction
-                if(thisComp->GetName() == "turret"){
-                    fwd = thisComp->GetRightVector();
-                }
-
-            }
-        }
-        
-        AddMovementInput (fwd, amount);
-    }
-}
-
-
-/**
- Function triggered when A or D is pressed to move the character right or left
- 
- - parameter amount: the amount to move the tank
- - returns: void
- */
-void ATankCharacter::MoveRight(float amount)
+void ATankCharacter::RotateForward(float amount)
 {
     if(Controller && amount)
     {
@@ -99,12 +69,101 @@ void ATankCharacter::MoveRight(float amount)
                 if(thisComp->GetName() == "turret"){
                     fwd = thisComp->GetForwardVector();
                     fwd = fwd * (-1);
+                    
+                    FString x = FString::SanitizeFloat(thisComp->GetComponentRotation().Vector().X);
+                    FString y = FString::SanitizeFloat(thisComp->GetComponentRotation().Vector().Y);
+                    FString z = FString::SanitizeFloat(thisComp->GetComponentRotation().Vector().Z);
+                    GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Red, TEXT("(" + x + ", " + y + ", " + z + ")"));
+                    
+                    if (amount < 0){
+                        currentDirection = (thisComp->GetComponentRotation().Vector() * -1).Rotation();
+                    }else if (amount > 0){
+                        currentDirection = thisComp->GetComponentRotation();
+                    }
+                    
+                }else if (thisComp->GetName() == "body" || thisComp->GetName() == "sideL" ||thisComp->GetName() == "sideR" ||thisComp->GetName() == "treadL" ||thisComp->GetName() == "treadR") {
+                    
+                    int direction;
+                    FRotator newRot = thisComp->GetComponentRotation();
+                    
+                    FString x = FString::SanitizeFloat(currentDirection.Yaw);
+                    FString y = FString::SanitizeFloat(newRot.Yaw);
+                    GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Red, TEXT("(" + x + ", " + y + ")"));
+                    
+                    if (FMath::Abs(currentDirection.Yaw - newRot.Yaw + 360) < 360 - FMath::Abs(currentDirection.Yaw - newRot.Yaw + 360)){
+                        direction = -5;
+                    }else{
+                        direction = 5;
+                    }
+                    
+                    if (!currentDirection.Equals(newRot, 5)){
+                        thisComp->AddLocalRotation(FRotator(0, amount*direction, 0));
+                    }
                 }
                 
             }
         }
+    }
+}
+
+
+/**
+ Function triggered when A or D is pressed to rotate the character right or left
+ 
+ - parameter amount: the amount to rotate the tank
+ - returns: void
+ */
+void ATankCharacter::RotateRight(float amount)
+{
+    if(Controller && amount)
+    {
+        FVector fwd = GetActorRightVector();
         
-        AddMovementInput (fwd, amount);
+        TArray<UActorComponent*> me = GetComponents();
+        
+        //find the direction of the turrent to move the tank in
+        for(int i = 0; i < me.Num(); i++){
+            UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
+            if (thisComp) {
+                
+                //if the turrent is found, get its direction to move the tank side to side from that direction
+                if(thisComp->GetName() == "turret"){
+                    fwd = thisComp->GetForwardVector();
+                    fwd = fwd * (-1);
+                    
+                    FString x = FString::SanitizeFloat(thisComp->GetComponentRotation().Vector().X);
+                    FString y = FString::SanitizeFloat(thisComp->GetComponentRotation().Vector().Y);
+                    FString z = FString::SanitizeFloat(thisComp->GetComponentRotation().Vector().Z);
+                    GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Red, TEXT("(" + x + ", " + y + ", " + z + ")"));
+                    
+                    if (amount < 0){
+                        currentDirection = (thisComp->GetComponentRotation().Vector() * -1).Rotation() + FRotator(0, 90, 0);
+                    }else if (amount > 0){
+                        currentDirection = thisComp->GetComponentRotation() + FRotator(0, 90, 0);
+                    }
+                    
+                }else if (thisComp->GetName() == "body" || thisComp->GetName() == "sideL" ||thisComp->GetName() == "sideR" ||thisComp->GetName() == "treadL" ||thisComp->GetName() == "treadR") {
+                    
+                    int direction;
+                    FRotator newRot = thisComp->GetComponentRotation();
+                    
+                    if (FMath::Abs(currentDirection.Yaw - newRot.Yaw + 360) < 360 - FMath::Abs(currentDirection.Yaw - newRot.Yaw + 360)){
+                        direction = 5;
+                    }else{
+                        direction = -5;
+                    }
+                    
+                    FString x = FString::SanitizeFloat(FMath::Abs(currentDirection.Yaw - newRot.Yaw + 360));
+                    FString y = FString::SanitizeFloat(360 - FMath::Abs(currentDirection.Yaw - newRot.Yaw + 360));
+                    GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Red, TEXT("(" + x + ", " + y + ")"));
+                    
+                    if (!currentDirection.Equals(newRot, 5)){
+                        thisComp->AddLocalRotation(FRotator(0, amount*direction, 0));
+                    }
+                }
+                
+            }
+        }
     }
 }
 
@@ -122,14 +181,32 @@ void ATankCharacter::Yaw(float amount)
 
 
 /**
- Function triggered when mouse is moved in the Y direction
+ Function triggered when Space or Left Shift is pressed to move the character forward or backward
  
- - parameter amount: the amount the mouse is moved
+ - parameter amount: the amount to rotate the tank
  - returns: void
  */
-void ATankCharacter::Pitch(float amount)
+void ATankCharacter::MoveForward(float amount)
 {
-    AddControllerPitchInput(-200.f * amount * GetWorld()->GetDeltaSeconds());
+    if(Controller && amount)
+    {
+        FVector fwd = GetActorRightVector();
+        
+        TArray<UActorComponent*> me = GetComponents();
+        
+        //find the direction of the turrent to move the tank in
+        for(int i = 0; i < me.Num(); i++){
+            UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
+            if (thisComp) {
+                
+                //if the turrent is found, get its direction to move the tank side to side from that direction
+                if(thisComp->GetName() == "body"){
+                    fwd = thisComp->GetRightVector();
+                }
+            }
+        }
+        AddMovementInput (fwd, amount);
+    }
 }
 
 

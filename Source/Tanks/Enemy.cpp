@@ -54,7 +54,6 @@ void AEnemy::fire(float angle){
     for(int i = 0; i < me.Num(); i++){
         UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
         if (GEngine && thisComp) {
-            GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, thisComp->GetName());
             
             //if the barrel is found, give the bullet the position and direction vector of the barrel
             if(thisComp->GetName() == "barrel"){
@@ -62,8 +61,6 @@ void AEnemy::fire(float angle){
                 vel = thisComp->GetRightVector();
                 start = thisComp->GetComponentLocation();
             }
-        }else{
-            GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, TEXT("No name"));
         }
     }
     

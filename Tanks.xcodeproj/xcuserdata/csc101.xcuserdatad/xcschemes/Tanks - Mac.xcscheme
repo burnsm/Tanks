@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "35008173A41C46AAF9C7A531"
+               BlueprintIdentifier = "F314FDAE91BEC1B7DEA8BA41"
                BuildableName = "Tanks - Mac"
                BlueprintName = "Tanks - Mac"
                ReferencedContainer = "container:Tanks.xcodeproj">
@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "08A643E93FEA45CE26754695"
+               BlueprintIdentifier = "46BC77453B920EF68BDB1B65"
                BuildableName = "UE4CmdLineRun.xctest"
                BlueprintName = "UE4CmdLineRun"
                ReferencedContainer = "container:Tanks.xcodeproj">
@@ -42,7 +42,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "35008173A41C46AAF9C7A531"
+            BlueprintIdentifier = "F314FDAE91BEC1B7DEA8BA41"
             BuildableName = "Tanks - Mac"
             BlueprintName = "Tanks - Mac"
             ReferencedContainer = "container:Tanks.xcodeproj">
@@ -60,12 +60,12 @@
       allowLocationSimulation = "YES">
       <PathRunnable
          runnableDebuggingMode = "0"
-         FilePath = "/Users/csc101/Documents/Unreal Projects/Tanks/Binaries/Mac/Tanks-Mac-Debug.app">
+         FilePath = "/Users/csc101/Documents/Michele/Unreal Projects/Tanks/Binaries/Mac/Tanks-Mac-Debug.app">
       </PathRunnable>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "35008173A41C46AAF9C7A531"
+            BlueprintIdentifier = "F314FDAE91BEC1B7DEA8BA41"
             BuildableName = "Tanks - Mac"
             BlueprintName = "Tanks - Mac"
             ReferencedContainer = "container:Tanks.xcodeproj">
@@ -73,7 +73,7 @@
       </MacroExpansion>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "&quot;/Users/csc101/Documents/Unreal Projects/Tanks/Tanks.uproject&quot;"
+            argument = "&quot;/Users/csc101/Documents/Michele/Unreal Projects/Tanks/Tanks.uproject&quot;"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -94,7 +94,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "35008173A41C46AAF9C7A531"
+            BlueprintIdentifier = "F314FDAE91BEC1B7DEA8BA41"
             BuildableName = "Tanks.app"
             BlueprintName = "Tanks"
             ReferencedContainer = "container:UE4.xcodeproj">
