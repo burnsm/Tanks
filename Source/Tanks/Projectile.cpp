@@ -63,6 +63,9 @@ AProjectile::AProjectile()
     ProjectileMovement->MaxSpeed = 3000.f;
     ProjectileMovement->bRotationFollowsVelocity = true;
     ProjectileMovement->bShouldBounce = true;
+    
+    //Die after 3 seconds by default
+    InitialLifeSpan = 3.0f;
 }
 
 // Called when the game starts or when spawned
@@ -123,6 +126,8 @@ void AProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVec
             //TODO:What do we do when we hit an AI?
             if(OtherActor->GetName().Contains(TEXT("BP_Enemy"))){
                 OtherActor->SetActorLocation(OtherActor->GetActorLocation() - FVector(0, 50, 0));
+                
+                Destroy();
             }
         }
     }
