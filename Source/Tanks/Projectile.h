@@ -11,12 +11,20 @@ class TANKS_API AProjectile : public AActor
     GENERATED_BODY()
     
     /** Dummy root component */
-    UPROPERTY(Category = Projectile, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    /*UPROPERTY(Category = Projectile, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class USceneComponent* DummyRoot;
     
-    /** StaticMesh component for the clickable block */
+    //StaticMesh component for the clickable block
     UPROPERTY(Category = Projectile, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    class UStaticMeshComponent* ProjectileMesh;
+    class UStaticMeshComponent* ProjectileMesh;*/
+    
+    /** Sphere collision component */
+    UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
+    class USphereComponent* CollisionComp;
+    
+    /** Projectile movement component */
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+    class UProjectileMovementComponent* ProjectileMovement;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -36,16 +44,20 @@ public:
     FVector getVelocity();
     
     UFUNCTION()
-    void onHit(AActor *SelfActor, AActor *otherActor, FVector NormalImpulse, const FHitResult &hit);
-    
+    void OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
     
 private:
     FVector velocity;
 	
 public:
-    /** Returns DummyRoot subobject **/
+    /** Returns DummyRoot subobject
     FORCEINLINE class USceneComponent* GetDummyRoot() const { return DummyRoot; }
-    /** Returns BlockMesh subobject **/
-    FORCEINLINE class UStaticMeshComponent* GetBallMesh() const { return ProjectileMesh; }
+    // Returns BlockMesh subobject
+    FORCEINLINE class UStaticMeshComponent* GetBallMesh() const { return ProjectileMesh; } **/
 
+    /** Returns CollisionComp subobject **/
+    FORCEINLINE class USphereComponent* GetCollisionComp() const { return CollisionComp; }
+    /** Returns ProjectileMovement subobject **/
+    FORCEINLINE class UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
 };

@@ -13,7 +13,4 @@ class TANKS_API AMyTank_GameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
-	
-	
-	
 };
