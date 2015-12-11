@@ -2,6 +2,7 @@
 
 #include "Tanks.h"
 #include "MyHUD.h"
+#include <cmath>
 
 #define BUTTONTYPE_MAIN_RESTART 	1
 #define BUTTONTYPE_MAIN_EXIT 		2
@@ -376,29 +377,20 @@ void AMyHUD::DrawHUD()
 void AMyHUD::DrawRadar()
 {
     //  3 == detail of the circle
-    int NumPoints = (int)(pow(2,1+3));
+    int NumPoints = (int)(pow(2,1+4));
     float radar_scale, radar_range, min;
     FVector2D radar_center;
-    //  randomly chosen number, change freely
+    //  randomly chosen number, change freely. Woorld coords.
     radar_range = 900.0;
     FVector2D ScreenSize = FVector2D(Canvas->SizeX, Canvas->SizeY);
 
-    //  Radar occupies 1/4 o smaller dimension, perfect circle
-    min = (ScreenSize.X > ScreenSize.Y) ? ScreenSize.X:ScreenSize.Y;
-    radar_scale = .25 * min * .5;
+    //  Radar occupies 1/3 o smaller dimension, perfect circle
+    min = (ScreenSize.X < ScreenSize.Y) ? ScreenSize.X:ScreenSize.Y;
+    radar_scale = .33 * min * .5;
     radar_center = FVector2D( ScreenSize.X - radar_scale - 15, ScreenSize.Y - radar_scale - 15 );
 
     //  Draw background circle
-    /*
-    UTexture2D *texturePtr;
-    ConstructorHelpers::FObjectFinder<UTexture2D> textureObj(TEXT("/Game/MapProps/cementColor"));
-    if(!textureObj.Object){
-        GEngine->AddOnScreenDebugMessage(2, 15.f, FColor::Black, "COULDNT FIND TEXTURE");
-        return;
-    }
-    texturePtr = textureObj.Object;
-    Canvas->K2_DrawPolygon(texturePtr, radar_center, FVector2D(radar_scale,radar_scale), NumPoints, FColor(204,255,255,50));
-    */
+    Canvas->K2_DrawPolygon(0, radar_center, FVector2D(radar_scale,radar_scale), NumPoints, FColor(94,145,145));
     DrawOtherPlayers(radar_scale, radar_center, radar_range);
     DrawRadarSweep(radar_scale, radar_center);
 }
@@ -409,49 +401,47 @@ void AMyHUD::DrawRadar()
 //  Draw dots for each nearby "tank"
 void AMyHUD::DrawOtherPlayers(float radar_scale, FVector2D radar_center, float radar_range)
 {
+    if(!GetOwningPawn())
+        return;
     FVector2D Me = FVector2D(GetOwningPawn()->GetActorLocation().X, GetOwningPawn()->GetActorLocation().Y);
     FString myName = GetOwningPawn()->GetName();
-    GEngine->AddOnScreenDebugMessage(0,2.f,FColor::Blue,myName);
     FVector2D Them;
     FString theirName;
+    FColor lineColor = FColor(204,255,255);
+    float LineThickness = 3;
+    float diamondLength = 5;
+    float rotateByDegree;
+    diamondLength = 3;
     //  searching for classes AEnemy, ATankCharacter
-    FActorIterator ActorItr(GetWorld());
-/*
-    for(; ActorItr; ++ActorItr){
+    for( FActorIterator ActorItr(GetWorld()) ; ActorItr; ++ActorItr){
         theirName = ActorItr->GetName();
-        GEngine->AddOnScreenDebugMessage(
-            1,1.f,FColor::Red,
-            theirName
-        );
-        if(theirName != myName){
-            //  If nearby actor is a tank/enemy
-            if( theirName.Contains("Enemy", ESearchCase::IgnoreCase, ESearchDir::FromStart) 
-                || theirName.Contains("Tank", ESearchCase::IgnoreCase, ESearchDir::FromStart) 
-            ){
-                Them = FVector2D(ActorItr->GetActorLocation().X,ActorItr->GetActorLocation().Y);
-                //  If the nearby actor is within my radar_range world coordinates
-                if( FVector2D::Distance(Me, Them) < radar_range ){
-                    Them = Them - Me;
-                    Them = Them.GetSafeNormal(.03);
-                    Them = Them / radar_range * radar_scale;
-                    Them = Them + radar_center;
-                    //  Draw a "dot" for them on the minimap
-                    DrawLine(
-                        FVector(Them.X, Them.Y, 0), 
-                        FVector(1,1,1)+FVector(Them.X, Them.Y, 0),
-                        FColor(204,255,255),
-                        2
-                    );
-                }
-                GEngine->AddOnScreenDebugMessage(
-                    2,1.f,FColor::Red,
-                    FString::SanitizeFloat(FVector2D::Distance(Me, Them))
-                );
+        if( theirName!=myName && theirName.Contains("TankChar", ESearchCase::IgnoreCase, ESearchDir::FromStart) ){
+            Them = FVector2D(ActorItr->GetActorLocation().X,ActorItr->GetActorLocation().Y);
+            //  If the nearby actor is within my radar_range world coordinates
+            if( FVector2D::Distance(Me, Them) < radar_range ){
+                Them = Them - Me;
+                Them = Them / radar_range * radar_scale;
+                Them = Them + radar_center;
+                //  Draw a diamond for them on the minimap
+                DrawLine(
+                    FVector(Them.X-diamondLength, Them.Y, 0), 
+                    FVector(Them.X, Them.Y+diamondLength, 0),
+                    lineColor, LineThickness);
+                DrawLine(
+                    FVector(Them.X, Them.Y+diamondLength, 0), 
+                    FVector(Them.X+diamondLength, Them.Y, 0),
+                    lineColor, LineThickness);
+                DrawLine(
+                    FVector(Them.X+diamondLength, Them.Y, 0), 
+                    FVector(Them.X, Them.Y-diamondLength, 0),
+                    lineColor, LineThickness);
+                DrawLine(
+                    FVector(Them.X, Them.Y-diamondLength, 0), 
+                    FVector(Them.X-diamondLength, Them.Y, 0),
+                    lineColor, LineThickness);
             }
         }
-        ++ActorItr;
     }
-*/
 }
 //  DrawRadarSweep()
 //      radar_scale is in screen pixels
@@ -461,11 +451,7 @@ void AMyHUD::DrawOtherPlayers(float radar_scale, FVector2D radar_center, float r
 void AMyHUD::DrawRadarSweep(float radar_scale, FVector2D radar_center)
 {
     static FVector2D sweeper = FVector2D(0,1) * radar_scale;
-    float delta = .035;
-    float newX, newY;
-    newX = sweeper.X * cos(delta) - sweeper.Y * sin(delta);
-    newY = sweeper.X * sin(delta) + sweeper.Y * cos(delta);
-    sweeper = FVector2D(newX, newY);
+    sweeper = RotateVector(sweeper, .025);
     sweeper = sweeper.GetSafeNormal(.03) * radar_scale;
     
     DrawLine(
@@ -486,4 +472,13 @@ void AMyHUD::DrawLine(FVector Start, FVector End, FLinearColor TheColor, float T
    NewLine.SetColor(TheColor);
    NewLine.LineThickness = Thick;
    Canvas->DrawItem(NewLine);
+}
+//  RotateVector(FVector2D, float)
+//      Return this vector rotated by these degrees
+FVector2D AMyHUD::RotateVector(FVector2D input, float delta)
+{
+    float newX, newY;
+    newX = input.X * cos(delta) - input.Y * sin(delta);
+    newY = input.X * sin(delta) + input.Y * cos(delta);
+    return FVector2D(newX, newY);
 }
