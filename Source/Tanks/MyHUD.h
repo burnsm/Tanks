@@ -193,7 +193,7 @@ public:
     void DrawOtherPlayers(float, FVector2D, float);
     void DrawRadarSweep(float, FVector2D);
     void DrawLine(FVector Start, FVector End, FLinearColor TheColor, float Thick);
-
+    FVector2D RotateVector(FVector2D input, float delta);
     
 protected:
     //Draw HUD
