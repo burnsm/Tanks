@@ -25,6 +25,8 @@ const FLinearColor AMyHUD::LC_Yellow = FLinearColor(1, 1, 0, 1);
 
 AMyHUD::AMyHUD(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
+    //PrimaryActorTick.bCanEverTick = true;
+
     //Draw HUD?
     DontDrawHUD = false;
     
@@ -361,9 +363,127 @@ void AMyHUD::DrawHUD()
     DrawHUD_DrawDialogs();
     
     DrawHealthBar();
+
+    DrawRadar();
     
     if (ActiveButton_Tip != "") DrawToolTip();
 }
 
 
+//  Radar things
+//  DrawRadar()
+//      Draw the circle the radar will sit on. Call DrawOtherPlayers and DrawRadarSweep.
+void AMyHUD::DrawRadar()
+{
+    //  3 == detail of the circle
+    int NumPoints = (int)(pow(2,1+3));
+    float radar_scale, radar_range, min;
+    FVector2D radar_center;
+    //  randomly chosen number, change freely
+    radar_range = 900.0;
+    FVector2D ScreenSize = FVector2D(Canvas->SizeX, Canvas->SizeY);
 
+    //  Radar occupies 1/4 o smaller dimension, perfect circle
+    min = (ScreenSize.X > ScreenSize.Y) ? ScreenSize.X:ScreenSize.Y;
+    radar_scale = .25 * min * .5;
+    radar_center = FVector2D( ScreenSize.X - radar_scale - 15, ScreenSize.Y - radar_scale - 15 );
+
+    //  Draw background circle
+    /*
+    UTexture2D *texturePtr;
+    ConstructorHelpers::FObjectFinder<UTexture2D> textureObj(TEXT("/Game/MapProps/cementColor"));
+    if(!textureObj.Object){
+        GEngine->AddOnScreenDebugMessage(2, 15.f, FColor::Black, "COULDNT FIND TEXTURE");
+        return;
+    }
+    texturePtr = textureObj.Object;
+    Canvas->K2_DrawPolygon(texturePtr, radar_center, FVector2D(radar_scale,radar_scale), NumPoints, FColor(204,255,255,50));
+    */
+    DrawOtherPlayers(radar_scale, radar_center, radar_range);
+    DrawRadarSweep(radar_scale, radar_center);
+}
+//  DrawOtherPlayers()
+//      radar_scale is in screen pixels
+//      radar_center is screen coordinate
+//      radar_range is world coordinate
+//  Draw dots for each nearby "tank"
+void AMyHUD::DrawOtherPlayers(float radar_scale, FVector2D radar_center, float radar_range)
+{
+    FVector2D Me = FVector2D(GetOwningPawn()->GetActorLocation().X, GetOwningPawn()->GetActorLocation().Y);
+    FString myName = GetOwningPawn()->GetName();
+    GEngine->AddOnScreenDebugMessage(0,2.f,FColor::Blue,myName);
+    FVector2D Them;
+    FString theirName;
+    //  searching for classes AEnemy, ATankCharacter
+    FActorIterator ActorItr(GetWorld());
+/*
+    for(; ActorItr; ++ActorItr){
+        theirName = ActorItr->GetName();
+        GEngine->AddOnScreenDebugMessage(
+            1,1.f,FColor::Red,
+            theirName
+        );
+        if(theirName != myName){
+            //  If nearby actor is a tank/enemy
+            if( theirName.Contains("Enemy", ESearchCase::IgnoreCase, ESearchDir::FromStart) 
+                || theirName.Contains("Tank", ESearchCase::IgnoreCase, ESearchDir::FromStart) 
+            ){
+                Them = FVector2D(ActorItr->GetActorLocation().X,ActorItr->GetActorLocation().Y);
+                //  If the nearby actor is within my radar_range world coordinates
+                if( FVector2D::Distance(Me, Them) < radar_range ){
+                    Them = Them - Me;
+                    Them = Them.GetSafeNormal(.03);
+                    Them = Them / radar_range * radar_scale;
+                    Them = Them + radar_center;
+                    //  Draw a "dot" for them on the minimap
+                    DrawLine(
+                        FVector(Them.X, Them.Y, 0), 
+                        FVector(1,1,1)+FVector(Them.X, Them.Y, 0),
+                        FColor(204,255,255),
+                        2
+                    );
+                }
+                GEngine->AddOnScreenDebugMessage(
+                    2,1.f,FColor::Red,
+                    FString::SanitizeFloat(FVector2D::Distance(Me, Them))
+                );
+            }
+        }
+        ++ActorItr;
+    }
+*/
+}
+//  DrawRadarSweep()
+//      radar_scale is in screen pixels
+//      radar_center is screen coordinate
+//      radar_range is world coordinate
+//  Draw a line that spins around the center (like a clock)
+void AMyHUD::DrawRadarSweep(float radar_scale, FVector2D radar_center)
+{
+    static FVector2D sweeper = FVector2D(0,1) * radar_scale;
+    float delta = .035;
+    float newX, newY;
+    newX = sweeper.X * cos(delta) - sweeper.Y * sin(delta);
+    newY = sweeper.X * sin(delta) + sweeper.Y * cos(delta);
+    sweeper = FVector2D(newX, newY);
+    sweeper = sweeper.GetSafeNormal(.03) * radar_scale;
+    
+    DrawLine(
+        FVector(radar_center.X, radar_center.Y, 0), 
+        FVector(sweeper.X+radar_center.X, sweeper.Y+radar_center.Y, 0), 
+        FColor(204,255,255), 
+        1
+    );
+}
+/*  DrawLine(FVector Start, FVector End, FLinearColor TheColor, float Thick)
+    *   Draws a line on the screen from Start to End
+    *   The line will be color TheColor, ie. FColor::Red
+    *   the float is the thickness of the line (in pixels?)
+*/
+void AMyHUD::DrawLine(FVector Start, FVector End, FLinearColor TheColor, float Thick)
+{
+   FCanvasLineItem NewLine(Start,End);
+   NewLine.SetColor(TheColor);
+   NewLine.LineThickness = Thick;
+   Canvas->DrawItem(NewLine);
+}
