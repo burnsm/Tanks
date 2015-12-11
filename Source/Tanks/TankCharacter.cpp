@@ -228,7 +228,7 @@ void ATankCharacter::fire(){
     for(int i = 0; i < me.Num(); i++){
         UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
         if (GEngine && thisComp) {
-            GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, thisComp->GetName());
+            //GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, thisComp->GetName());
             
             //if the barrel is found, set starting position and velocity
             if(thisComp->GetName() == "barrel"){
@@ -237,7 +237,7 @@ void ATankCharacter::fire(){
                 rot = thisComp->GetComponentRotation();
             }
         }else{
-            GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, TEXT("No name"));
+            //GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, TEXT("No name"));
         }
     }
     
@@ -285,7 +285,7 @@ void ATankCharacter::RaiseBarrel(float amount)
             //if the barrel is found, add the rotation to it
             if(thisComp->GetName() == "barrel"){
                 thisComp->AddLocalRotation(FRotator(0, 0, amount));
-                GEngine->AddOnScreenDebugMessage(40, 1.0f, FColor::Blue, TEXT("Pitch"));
+                //GEngine->AddOnScreenDebugMessage(40, 1.0f, FColor::Blue, TEXT("Pitch"));
             }
         }
     }

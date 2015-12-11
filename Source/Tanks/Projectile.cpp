@@ -121,7 +121,7 @@ void AProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVec
     
     if(OtherActor){
         if (GEngine) {
-            GEngine->AddOnScreenDebugMessage(0, 1.0f, FColor::Green, OtherActor->GetName());
+            //GEngine->AddOnScreenDebugMessage(0, 1.0f, FColor::Green, OtherActor->GetName());
             
             //TODO:What do we do when we hit an AI?
             if(OtherActor->GetName().Contains(TEXT("BP_Enemy"))){
