@@ -10,7 +10,7 @@
 AEnemy::AEnemy(const class FObjectInitializer&)
 {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-    health = 5;
+    health = 15;
     PrimaryActorTick.bCanEverTick = true;
     
     AIControllerClass = AEnemyController::StaticClass();

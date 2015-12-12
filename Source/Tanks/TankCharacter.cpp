@@ -21,6 +21,7 @@ ATankCharacter::ATankCharacter()
     MainMenuOn=false;
     lost = false;
     health=25;
+  
     
 }
 
@@ -45,6 +46,7 @@ void ATankCharacter::Tick( float DeltaTime )
             
             //if the turrent is found, set the direction the tank is facing to that direction
             topOfTank = thisComp->GetComponentRotation();
+            
         }
     }
     

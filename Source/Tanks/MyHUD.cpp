@@ -30,7 +30,7 @@ const float healthWidth = 10;
 AMyHUD::AMyHUD(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
     //PrimaryActorTick.bCanEverTick = true;
-
+    
     //Draw HUD?
     DontDrawHUD = false;
     
@@ -38,6 +38,7 @@ AMyHUD::AMyHUD(const class FObjectInitializer& PCIP) : Super(PCIP)
     ConfirmDialogOpen = false;
     InMainMenu = true;
     won = false;
+    MainMenuOn = false;
     
     //Scale
     GlobalHUDMult = 1;
@@ -193,7 +194,7 @@ void AMyHUD::DrawHealthBar()
                 true
                 );
     
-     ATankCharacter *MyTank = Cast<ATankCharacter>(UGameplayStatics::GetPlayerPawn(this,0));
+    ATankCharacter *MyTank = Cast<ATankCharacter>(UGameplayStatics::GetPlayerPawn(this,0));
     
     //Goes from left to right
     float y=100;
@@ -331,7 +332,7 @@ void AMyHUD::DrawToolTip()
              DefaultFontScale,
              false
              );
-} 
+}
 
 void AMyHUD::DrawHUD_Reset()
 {
@@ -343,24 +344,27 @@ void AMyHUD::DrawHUD_Reset()
 void AMyHUD::DrawHUD()
 {
     ATankCharacter *MyTank = Cast<ATankCharacter>(UGameplayStatics::GetPlayerPawn(this,0));
+    
+    MainMenuOn = MyTank->MainMenuOn;
+    
     if (MyTank->MainMenuOn) {
         
-    //Have PC for Mouse Cursor?
-    if (!ThePC)
-    {
-        //Attempt to Reacquire PC
-        ThePC = GetOwningPlayerController();
+        //Have PC for Mouse Cursor?
+        if (!ThePC)
+        {
+            //Attempt to Reacquire PC
+            ThePC = GetOwningPlayerController();
+            
+            //Could Not Obtain PC
+            if (!ThePC) return;
+        }
         
-        //Could Not Obtain PC
-        if (!ThePC) return;
-    }
-    
-    //Display the Cursor
-    ThePC->bShowMouseCursor = true;
-    
-    //Draw HUD?
-    if (DontDrawHUD) return;
-    
+        //Display the Cursor
+        ThePC->bShowMouseCursor = true;
+        
+        //Draw HUD?
+        if (DontDrawHUD) return;
+        
         //Reset States
         DrawHUD_Reset();
         
@@ -373,9 +377,23 @@ void AMyHUD::DrawHUD()
         //Draw Dialogs
         DrawHUD_DrawDialogs();
         if (ActiveButton_Tip != "") DrawToolTip();
-
         
+        
+    } else {
+        
+        //Have PC for Mouse Cursor?
+        if (!ThePC)
+        {
+            //Attempt to Reacquire PC
+            ThePC = GetOwningPlayerController();
+            
+            //Could Not Obtain PC
+            if (!ThePC) return;
+        }
+        
+        ThePC->bShowMouseCursor = false;
     }
+    
     //Super
     Super::DrawHUD();
     
@@ -395,19 +413,17 @@ void AMyHUD::DrawHUD()
     //DrawHUD_DrawDialogs();
     
     DrawHealthBar();
-
+    
     DrawRadar();
     
     //if (ActiveButton_Tip != "") DrawToolTip();
     
     if (MyTank->lost && !won){
-        DrawLoss();
+        loss = true;
     }
     
     if (!MyTank->lost && !won) {
         checkWin();
-    }else if (won && !MyTank->lost){
-        DrawWin();
     }
 }
 
@@ -424,12 +440,12 @@ void AMyHUD::DrawRadar()
     //  randomly chosen number, change freely. Woorld coords.
     radar_range = 900.0;
     FVector2D ScreenSize = FVector2D(Canvas->SizeX, Canvas->SizeY);
-
+    
     //  Radar occupies 1/3 o smaller dimension, perfect circle
     min = (ScreenSize.X < ScreenSize.Y) ? ScreenSize.X:ScreenSize.Y;
     radar_scale = .33 * min * .5;
     radar_center = FVector2D( ScreenSize.X - radar_scale - 15, ScreenSize.Y - radar_scale - 15 );
-
+    
     //  Draw background circle
     Canvas->K2_DrawPolygon(0, radar_center, FVector2D(radar_scale,radar_scale), NumPoints, FColor(94,145,145));
     DrawOtherPlayers(radar_scale, radar_center, radar_range);
@@ -472,21 +488,21 @@ void AMyHUD::DrawOtherPlayers(float radar_scale, FVector2D radar_center, float r
                 
                 //  Draw a diamond for them on the minimap
                 DrawLine(
-                    FVector(Them.X-diamondLength, Them.Y, 0), 
-                    FVector(Them.X, Them.Y+diamondLength, 0),
-                    lineColor, LineThickness);
+                         FVector(Them.X-diamondLength, Them.Y, 0),
+                         FVector(Them.X, Them.Y+diamondLength, 0),
+                         lineColor, LineThickness);
                 DrawLine(
-                    FVector(Them.X, Them.Y+diamondLength, 0), 
-                    FVector(Them.X+diamondLength, Them.Y, 0),
-                    lineColor, LineThickness);
+                         FVector(Them.X, Them.Y+diamondLength, 0),
+                         FVector(Them.X+diamondLength, Them.Y, 0),
+                         lineColor, LineThickness);
                 DrawLine(
-                    FVector(Them.X+diamondLength, Them.Y, 0), 
-                    FVector(Them.X, Them.Y-diamondLength, 0),
-                    lineColor, LineThickness);
+                         FVector(Them.X+diamondLength, Them.Y, 0),
+                         FVector(Them.X, Them.Y-diamondLength, 0),
+                         lineColor, LineThickness);
                 DrawLine(
-                    FVector(Them.X, Them.Y-diamondLength, 0), 
-                    FVector(Them.X-diamondLength, Them.Y, 0),
-                    lineColor, LineThickness);
+                         FVector(Them.X, Them.Y-diamondLength, 0),
+                         FVector(Them.X-diamondLength, Them.Y, 0),
+                         lineColor, LineThickness);
             }
         }
     }
@@ -503,23 +519,23 @@ void AMyHUD::DrawRadarSweep(float radar_scale, FVector2D radar_center)
     sweeper = sweeper.GetSafeNormal(.03) * radar_scale;
     
     DrawLine(
-        FVector(radar_center.X, radar_center.Y, 0), 
-        FVector(sweeper.X+radar_center.X, sweeper.Y+radar_center.Y, 0), 
-        FColor(204,255,255), 
-        1
-    );
+             FVector(radar_center.X, radar_center.Y, 0),
+             FVector(sweeper.X+radar_center.X, sweeper.Y+radar_center.Y, 0),
+             FColor(204,255,255),
+             1
+             );
 }
 /*  DrawLine(FVector Start, FVector End, FLinearColor TheColor, float Thick)
-    *   Draws a line on the screen from Start to End
-    *   The line will be color TheColor, ie. FColor::Red
-    *   the float is the thickness of the line (in pixels?)
-*/
+ *   Draws a line on the screen from Start to End
+ *   The line will be color TheColor, ie. FColor::Red
+ *   the float is the thickness of the line (in pixels?)
+ */
 void AMyHUD::DrawLine(FVector Start, FVector End, FLinearColor TheColor, float Thick)
 {
-   FCanvasLineItem NewLine(Start,End);
-   NewLine.SetColor(TheColor);
-   NewLine.LineThickness = Thick;
-   Canvas->DrawItem(NewLine);
+    FCanvasLineItem NewLine(Start,End);
+    NewLine.SetColor(TheColor);
+    NewLine.LineThickness = Thick;
+    Canvas->DrawItem(NewLine);
 }
 //  RotateVector(FVector2D, float)
 //      Return this vector rotated by these degrees
@@ -537,7 +553,7 @@ FVector2D AMyHUD::RotateVector(FVector2D input, float delta)
  
  - parameter void:
  - returns: void
-*/
+ */
 void AMyHUD::checkWin(){
     bool current = true;
     
@@ -551,26 +567,15 @@ void AMyHUD::checkWin(){
     won = current;
 }
 
-
 /**
- Function called to draw that the user has won
- 
- - parameter void:
- - returns: void
+ Function that prints the current controls that are used in the game
+
+ -parameter void:
+ -returns: void
 */
-void AMyHUD::DrawWin(){
-    //TODO: Michele/Bel draw win pic
-    GEngine->AddOnScreenDebugMessage(1, 1.0f, FColor::Blue, TEXT("YOU WON"));
-}
-
-
-/**
- Function called to draw that the user has lost
- 
- - parameter void:
- - returns: void
- */
-void AMyHUD::DrawLoss(){
-    //TODO: Michele/Bel draw lost pic
-    GEngine->AddOnScreenDebugMessage(1, 1.0f, FColor::Blue, TEXT("YOU LOST"));
+void AMyHUD::DrawInstructions(){
+     FVector2D ScreenSize = FVector2D(Canvas->SizeX, Canvas->SizeY);
+    FVector2D WinSize;
+    GetTextSize(TEXT("Controls to Move: WASD to change "), WinSize.X, WinSize.Y, VerdanaFont);
+    DrawText(TEXT("YAY!! YOU WON!! :D "), FColor::Red, (ScreenSize.X - WinSize.X) / 2.0f, (ScreenSize.Y - WinSize.Y) / 2.0f, VerdanaFont);
 }

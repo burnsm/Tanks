@@ -86,7 +86,15 @@ public:
     //States
     bool ConfirmDialogOpen;
     bool InMainMenu;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UserMade")
     bool won;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UserMade")
+    bool loss;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UserMade")
+    bool MainMenuOn;
     
     int32 		ActiveButton_Type;
     FString 	ActiveButton_Tip;
@@ -185,8 +193,6 @@ public:
     void DrawConfirmButtons();
     void DrawHealthBar();
     void DrawToolTip();
-    void DrawWin();
-    void DrawLoss();
     
     //Core
     APlayerController* ThePC;
@@ -197,6 +203,9 @@ public:
     void DrawRadarSweep(float, FVector2D);
     void DrawLine(FVector Start, FVector End, FLinearColor TheColor, float Thick);
     FVector2D RotateVector(FVector2D input, float delta);
+    
+    //Instructions
+    void DrawInstructions();
     
 protected:
     //Draw HUD
