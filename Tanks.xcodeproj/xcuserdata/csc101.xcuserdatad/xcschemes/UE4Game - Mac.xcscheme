@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "08A039578AEA0BBE46E3C1F8"
-               BuildableName = "UE4Game - Mac"
-               BlueprintName = "UE4Game - Mac"
+               BuildableName = "UE4Editor - Mac"
+               BlueprintName = "UE4Editor - Mac"
                ReferencedContainer = "container:Tanks.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,8 +33,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "46BC77453B920EF68BDB1B65"
-               BuildableName = "UE4CmdLineRun.xctest"
-               BlueprintName = "UE4CmdLineRun"
+               BuildableName = "libUE4XcodeHelper.a"
+               BlueprintName = "UE4XcodeHelper"
                ReferencedContainer = "container:Tanks.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -43,8 +43,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "08A039578AEA0BBE46E3C1F8"
-            BuildableName = "UE4Game - Mac"
-            BlueprintName = "UE4Game - Mac"
+            BuildableName = "UE4Editor - Mac"
+            BlueprintName = "UE4Editor - Mac"
             ReferencedContainer = "container:Tanks.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -66,8 +66,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "08A039578AEA0BBE46E3C1F8"
-            BuildableName = "UE4Game - Mac"
-            BlueprintName = "UE4Game - Mac"
+            BuildableName = "UE4Editor - Mac"
+            BlueprintName = "UE4Editor - Mac"
             ReferencedContainer = "container:Tanks.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

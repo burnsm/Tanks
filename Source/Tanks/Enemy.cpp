@@ -10,6 +10,7 @@
 AEnemy::AEnemy(const class FObjectInitializer&)
 {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+    health = 5;
     PrimaryActorTick.bCanEverTick = true;
     
     AIControllerClass = AEnemyController::StaticClass();
@@ -47,6 +48,7 @@ void AEnemy::fire(float angle){
     
     FVector start = GetActorLocation();
     FVector vel = GetActorForwardVector();
+    FRotator rot = GetActorRotation();
     
     TArray<UActorComponent*> me = GetComponents();
     
@@ -59,7 +61,8 @@ void AEnemy::fire(float angle){
             if(thisComp->GetName() == "barrel"){
                 thisComp->SetRelativeRotation(FRotator(0, 0, angle));
                 vel = thisComp->GetRightVector();
-                start = thisComp->GetComponentLocation();
+                rot = thisComp->GetComponentRotation();
+                start = thisComp->GetComponentLocation() + rot.RotateVector(FVector(0, 40, 35));
             }
         }
     }
@@ -93,4 +96,10 @@ void AEnemy::readyToFire(){
     canFire = true;
 }
 
+
+void AEnemy::checkLoss(){
+    if (health == 0) {
+        Destroy();
+    }
+}
 

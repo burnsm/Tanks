@@ -32,13 +32,20 @@ public:
     UPROPERTY(EditDefaultsOnly, Category=Projectile)
     TSubclassOf<class AProjectile> ProjectileClass;
   
-    //float RotationRate=1.0 ;
+    bool MainMenuOn;
     void RotateForward(float amount);
     void RotateRight(float amount);
     void Yaw(float amount);
     void MoveForward(float amount);
     void fire();
-    void RaiseBarrel(float amount);
+    void DisplayMainMenu();
+    
+    int health;
+    void checkLoss();
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UserMade")
+    bool lost;
     
     FRotator currentDirection;
+    FRotator topOfTank;
 };

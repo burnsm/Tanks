@@ -33,5 +33,9 @@ public:
     FTimerHandle handleClock;
     void readyToFire();
     bool canFire = true;
+    
+    
+    int health;
+    void checkLoss();
 	
 };
