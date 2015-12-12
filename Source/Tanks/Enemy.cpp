@@ -10,6 +10,7 @@
 AEnemy::AEnemy(const class FObjectInitializer&)
 {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+    health = 15;
     PrimaryActorTick.bCanEverTick = true;
     
     AIControllerClass = AEnemyController::StaticClass();
@@ -47,6 +48,7 @@ void AEnemy::fire(float angle){
     
     FVector start = GetActorLocation();
     FVector vel = GetActorForwardVector();
+    FRotator rot = GetActorRotation();
     
     TArray<UActorComponent*> me = GetComponents();
     
@@ -54,16 +56,14 @@ void AEnemy::fire(float angle){
     for(int i = 0; i < me.Num(); i++){
         UStaticMeshComponent *thisComp = Cast<UStaticMeshComponent>(me[i]);
         if (GEngine && thisComp) {
-            GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, thisComp->GetName());
             
             //if the barrel is found, give the bullet the position and direction vector of the barrel
             if(thisComp->GetName() == "barrel"){
                 thisComp->SetRelativeRotation(FRotator(0, 0, angle));
                 vel = thisComp->GetRightVector();
-                start = thisComp->GetComponentLocation();
+                rot = thisComp->GetComponentRotation();
+                start = thisComp->GetComponentLocation() + rot.RotateVector(FVector(0, 40, 35));
             }
-        }else{
-            GEngine->AddOnScreenDebugMessage(i, 1.0f, FColor::Blue, TEXT("No name"));
         }
     }
     
@@ -96,4 +96,10 @@ void AEnemy::readyToFire(){
     canFire = true;
 }
 
+
+void AEnemy::checkLoss(){
+    if (health == 0) {
+        Destroy();
+    }
+}
 

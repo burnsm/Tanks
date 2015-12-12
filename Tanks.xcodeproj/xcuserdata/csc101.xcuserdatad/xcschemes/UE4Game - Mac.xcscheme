@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "BC2E49E2BEEF45A683AFFE79"
-               BuildableName = "UE4Game - Mac"
-               BlueprintName = "UE4Game - Mac"
+               BlueprintIdentifier = "08A039578AEA0BBE46E3C1F8"
+               BuildableName = "UE4Editor - Mac"
+               BlueprintName = "UE4Editor - Mac"
                ReferencedContainer = "container:Tanks.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "08A643E93FEA45CE26754695"
-               BuildableName = "UE4CmdLineRun.xctest"
-               BlueprintName = "UE4CmdLineRun"
+               BlueprintIdentifier = "46BC77453B920EF68BDB1B65"
+               BuildableName = "libUE4XcodeHelper.a"
+               BlueprintName = "UE4XcodeHelper"
                ReferencedContainer = "container:Tanks.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -42,9 +42,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "BC2E49E2BEEF45A683AFFE79"
-            BuildableName = "UE4Game - Mac"
-            BlueprintName = "UE4Game - Mac"
+            BlueprintIdentifier = "08A039578AEA0BBE46E3C1F8"
+            BuildableName = "UE4Editor - Mac"
+            BlueprintName = "UE4Editor - Mac"
             ReferencedContainer = "container:Tanks.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -65,9 +65,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "BC2E49E2BEEF45A683AFFE79"
-            BuildableName = "UE4Game - Mac"
-            BlueprintName = "UE4Game - Mac"
+            BlueprintIdentifier = "08A039578AEA0BBE46E3C1F8"
+            BuildableName = "UE4Editor - Mac"
+            BlueprintName = "UE4Editor - Mac"
             ReferencedContainer = "container:Tanks.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -94,7 +94,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "BC2E49E2BEEF45A683AFFE79"
+            BlueprintIdentifier = "08A039578AEA0BBE46E3C1F8"
             BuildableName = "UE4.app"
             BlueprintName = "UE4"
             ReferencedContainer = "container:UE4.xcodeproj">

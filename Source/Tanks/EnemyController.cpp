@@ -75,7 +75,9 @@ void AEnemyController::SearchForEnemy()
     
     if (BestPawn)
     {
+        GEngine->AddOnScreenDebugMessage(0, 1.0f, FColor::Green, BestPawn->GetName());
         SetEnemy(BestPawn);
+        
     }
 }
 

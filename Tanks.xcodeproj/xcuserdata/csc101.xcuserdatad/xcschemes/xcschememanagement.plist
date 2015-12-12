@@ -2,6 +2,59 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>SchemeUserState</key>
+	<dict>
+		<key>Tanks - Mac.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>Tanks - iOS.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>0</integer>
+		</dict>
+		<key>TanksEditor - Mac.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
+		<key>UE4CmdLineRun 2.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>8</integer>
+		</dict>
+		<key>UE4CmdLineRun.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>UE4Editor - Mac.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
+		<key>UE4Game - Mac 2.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>9</integer>
+		</dict>
+		<key>UE4Game - Mac.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
+		<key>UE4Game - iOS.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>5</integer>
+		</dict>
+		<key>UE4XcodeHelper.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
+	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>00BE260A16A0CE7F35958E3E</key>
@@ -10,6 +63,11 @@
 			<true/>
 		</dict>
 		<key>01D7F5FA0216AC6226A1280E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>08A039578AEA0BBE46E3C1F8</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -30,6 +88,11 @@
 			<true/>
 		</dict>
 		<key>218920EFE04144E374789075</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>22094688F02DF7ACE6302DE2</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -59,7 +122,37 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>46BC77453B920EF68BDB1B65</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>5A15C5A584AC64BE7F1B5EC8</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>5F1B9B30C42F260C8DB15732</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>61232FDE3757A37F3123E82A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6387DD5F837FAA75754A56F4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>6892DF523255CC1AD38F0188</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6B205DEBF2DC3E1A90574F6A</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -114,6 +207,11 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>C5112A7A1C24D902E09D739D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>DFFE753A5D76854B03D9AB89</key>
 		<dict>
 			<key>primary</key>
@@ -134,12 +232,27 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>F314FDAE91BEC1B7DEA8BA41</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F6B75A6838DA13FB325E1836</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>F6EF6A347F66C43EB4952451</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>F7B0A48960FF79ABE56FC202</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F95DBEE24092F2F4977DA35F</key>
 		<dict>
 			<key>primary</key>
 			<true/>

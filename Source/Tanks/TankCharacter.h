@@ -24,6 +24,8 @@ public:
 	//virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
     void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
     
+  
+    
     /** Sound to play each time we fire */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
     class USoundBase* FireSound;
@@ -31,12 +33,24 @@ public:
     /** Projectile class to spawn */
     UPROPERTY(EditDefaultsOnly, Category=Projectile)
     TSubclassOf<class AProjectile> ProjectileClass;
-  
-    //float RotationRate=1.0 ;
-    void MoveForward(float amount);
-    void MoveRight(float amount);
+    
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UserMade")
+    bool MainMenuOn;
+    
+    void RotateForward(float amount);
+    void RotateRight(float amount);
     void Yaw(float amount);
-    void Pitch(float amount);
+    void MoveForward(float amount);
     void fire();
-    void RaiseBarrel(float amount);
+    void DisplayMainMenu();
+    
+    int health;
+    void checkLoss();
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UserMade")
+    bool lost;
+    
+    FRotator currentDirection;
+    FRotator topOfTank;
 };
