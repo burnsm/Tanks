@@ -86,6 +86,7 @@ public:
     //States
     bool ConfirmDialogOpen;
     bool InMainMenu;
+    bool won;
     
     int32 		ActiveButton_Type;
     FString 	ActiveButton_Tip;
@@ -184,6 +185,8 @@ public:
     void DrawConfirmButtons();
     void DrawHealthBar();
     void DrawToolTip();
+    void DrawWin();
+    void DrawLoss();
     
     //Core
     APlayerController* ThePC;
@@ -198,7 +201,10 @@ public:
 protected:
     //Draw HUD
     void DrawHUD_Reset();
-    virtual void DrawHUD() override; 
+    virtual void DrawHUD() override;
+
+private:
+    void checkWin();
     
     
 };

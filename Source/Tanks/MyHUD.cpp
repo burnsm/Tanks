@@ -2,6 +2,7 @@
 
 #include "Tanks.h"
 #include "MyHUD.h"
+#include "TankCharacter.h"
 #include <cmath>
 
 #define BUTTONTYPE_MAIN_RESTART 	1
@@ -24,6 +25,8 @@ const FLinearColor AMyHUD::LC_Pink = FLinearColor(1, 0, 1, 1);
 const FLinearColor AMyHUD::LC_Red = FLinearColor(1, 0, 0, 1);
 const FLinearColor AMyHUD::LC_Yellow = FLinearColor(1, 1, 0, 1);
 
+const float healthWidth = 10;
+
 AMyHUD::AMyHUD(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
     //PrimaryActorTick.bCanEverTick = true;
@@ -34,6 +37,7 @@ AMyHUD::AMyHUD(const class FObjectInitializer& PCIP) : Super(PCIP)
     //States
     ConfirmDialogOpen = false;
     InMainMenu = true;
+    won = false;
     
     //Scale
     GlobalHUDMult = 1;
@@ -189,12 +193,21 @@ void AMyHUD::DrawHealthBar()
                 true
                 );
     
+     ATankCharacter *MyTank = Cast<ATankCharacter>(UGameplayStatics::GetPlayerPawn(this,0));
+    
     //Goes from left to right
-    DrawHUDRect(100, 100, 50, 50, FLinearColor(0, 1, 0, 1));
-    DrawHUDRect(150, 100, 50, 50, FLinearColor(0, 1, 0, 1));
-    DrawHUDRect(200, 100, 50, 50, FLinearColor(0, 1, 0, 1));
-    DrawHUDRect(250, 100, 50, 50, FLinearColor(0, 1, 0, 1));
-    DrawHUDRect(300, 100, 50, 50, FLinearColor(0, 1, 0, 1));
+    float y=100;
+    for(int i=0; i<MyTank->health; i++){
+        DrawHUDRect( y, 100, healthWidth, 50, FLinearColor(0,1,0,1));
+        y+=healthWidth;
+    }
+    
+    
+    //DrawHUDRect(100, 100, 50, 50, FLinearColor(0, 1, 0, 1));
+    //DrawHUDRect(150, 100, 50, 50, FLinearColor(0, 1, 0, 1));
+    //DrawHUDRect(200, 100, 50, 50, FLinearColor(0, 1, 0, 1));
+    //DrawHUDRect(250, 100, 50, 50, FLinearColor(0, 1, 0, 1));
+    //DrawHUDRect(300, 100, 50, 50, FLinearColor(0, 1, 0, 1));
 }
 
 // Is cursor in Buttons
@@ -329,22 +342,40 @@ void AMyHUD::DrawHUD_Reset()
 
 void AMyHUD::DrawHUD()
 {
+    ATankCharacter *MyTank = Cast<ATankCharacter>(UGameplayStatics::GetPlayerPawn(this,0));
+    if (MyTank->MainMenuOn) {
+        
     //Have PC for Mouse Cursor?
     if (!ThePC)
     {
         //Attempt to Reacquire PC
-        //ThePC = GetOwningPlayerController();
+        ThePC = GetOwningPlayerController();
         
         //Could Not Obtain PC
-        //if (!ThePC) return;
+        if (!ThePC) return;
     }
     
     //Display the Cursor
-    //ThePC->bShowMouseCursor = true;
+    ThePC->bShowMouseCursor = true;
     
     //Draw HUD?
     if (DontDrawHUD) return;
     
+        //Reset States
+        DrawHUD_Reset();
+        
+        //Get New Mouse Position
+        ThePC->GetMousePosition(MouseLocation.X, MouseLocation.Y);
+        
+        //Cursor In Buttons
+        DrawHUD_CheckCursorInButtons();
+        
+        //Draw Dialogs
+        DrawHUD_DrawDialogs();
+        if (ActiveButton_Tip != "") DrawToolTip();
+
+        
+    }
     //Super
     Super::DrawHUD();
     
@@ -352,22 +383,32 @@ void AMyHUD::DrawHUD()
     if (!Canvas) return;
     
     //Reset States
-    DrawHUD_Reset();
+    //DrawHUD_Reset();
     
     //Get New Mouse Position
     //ThePC->GetMousePosition(MouseLocation.X, MouseLocation.Y);
     
     //Cursor In Buttons
-    DrawHUD_CheckCursorInButtons();
+    //DrawHUD_CheckCursorInButtons();
     
     //Draw Dialogs
-    DrawHUD_DrawDialogs();
+    //DrawHUD_DrawDialogs();
     
     DrawHealthBar();
 
     DrawRadar();
     
-    if (ActiveButton_Tip != "") DrawToolTip();
+    //if (ActiveButton_Tip != "") DrawToolTip();
+    
+    if (MyTank->lost && !won){
+        DrawLoss();
+    }
+    
+    if (!MyTank->lost && !won) {
+        checkWin();
+    }else if (won && !MyTank->lost){
+        DrawWin();
+    }
 }
 
 
@@ -394,6 +435,8 @@ void AMyHUD::DrawRadar()
     DrawOtherPlayers(radar_scale, radar_center, radar_range);
     DrawRadarSweep(radar_scale, radar_center);
 }
+
+
 //  DrawOtherPlayers()
 //      radar_scale is in screen pixels
 //      radar_center is screen coordinate
@@ -415,13 +458,18 @@ void AMyHUD::DrawOtherPlayers(float radar_scale, FVector2D radar_center, float r
     //  searching for classes AEnemy, ATankCharacter
     for( FActorIterator ActorItr(GetWorld()) ; ActorItr; ++ActorItr){
         theirName = ActorItr->GetName();
-        if( theirName!=myName && theirName.Contains("TankChar", ESearchCase::IgnoreCase, ESearchDir::FromStart) ){
-            Them = FVector2D(ActorItr->GetActorLocation().X,ActorItr->GetActorLocation().Y);
+        if( theirName!=myName && theirName.Contains("BP_Enemy", ESearchCase::IgnoreCase, ESearchDir::FromStart) ){
+            
+            ATankCharacter *owningTank = Cast<ATankCharacter>(GetOwningPawn());
+            FVector them3D = ActorItr->GetActorLocation();
+            Them = FVector2D(them3D.X, them3D.Y);
+            
             //  If the nearby actor is within my radar_range world coordinates
             if( FVector2D::Distance(Me, Them) < radar_range ){
                 Them = Them - Me;
                 Them = Them / radar_range * radar_scale;
                 Them = Them + radar_center;
+                
                 //  Draw a diamond for them on the minimap
                 DrawLine(
                     FVector(Them.X-diamondLength, Them.Y, 0), 
@@ -481,4 +529,48 @@ FVector2D AMyHUD::RotateVector(FVector2D input, float delta)
     newX = input.X * cos(delta) - input.Y * sin(delta);
     newY = input.X * sin(delta) + input.Y * cos(delta);
     return FVector2D(newX, newY);
+}
+
+
+/**
+ Function called to check if the user has won
+ 
+ - parameter void:
+ - returns: void
+*/
+void AMyHUD::checkWin(){
+    bool current = true;
+    
+    //if there are any enemys left, we haven't won yet
+    for( FActorIterator ActorItr(GetWorld()) ; ActorItr; ++ActorItr){
+        if (ActorItr->GetName().Contains("BP_Enemy")){
+            current = false;
+        }
+    }
+    
+    won = current;
+}
+
+
+/**
+ Function called to draw that the user has won
+ 
+ - parameter void:
+ - returns: void
+*/
+void AMyHUD::DrawWin(){
+    //TODO: Michele/Bel draw win pic
+    GEngine->AddOnScreenDebugMessage(1, 1.0f, FColor::Blue, TEXT("YOU WON"));
+}
+
+
+/**
+ Function called to draw that the user has lost
+ 
+ - parameter void:
+ - returns: void
+ */
+void AMyHUD::DrawLoss(){
+    //TODO: Michele/Bel draw lost pic
+    GEngine->AddOnScreenDebugMessage(1, 1.0f, FColor::Blue, TEXT("YOU LOST"));
 }

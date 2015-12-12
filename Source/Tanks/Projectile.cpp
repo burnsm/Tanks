@@ -3,6 +3,8 @@
 #include "Tanks.h"
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "TankCharacter.h"
+#include "Enemy.h"
 
 
 // Sets default values
@@ -126,9 +128,22 @@ void AProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVec
             //TODO:What do we do when we hit an AI?
             if(OtherActor->GetName().Contains(TEXT("BP_Enemy"))){
                 OtherActor->SetActorLocation(OtherActor->GetActorLocation() - FVector(0, 50, 0));
-                
+                AEnemy *thisEnemy = Cast<AEnemy>(OtherActor);
+                if(thisEnemy->health != 0){
+                    thisEnemy->health --;
+                    thisEnemy->checkLoss();
+                }
                 Destroy();
             }
+            if(OtherActor->GetName().Contains(TEXT("TankCharacter"))){
+                 ATankCharacter *MyTank = Cast<ATankCharacter>(UGameplayStatics::GetPlayerPawn(this,0));
+                if(MyTank->health != 0){
+                     MyTank->health --;
+                    MyTank->checkLoss();
+                }
+                Destroy();
+            }
+               
         }
     }
     
